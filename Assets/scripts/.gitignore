@@ -1,0 +1,6 @@
+*.cs.meta
+*.meta
+*.asset
+*.backup
+*.cache
+*.json
