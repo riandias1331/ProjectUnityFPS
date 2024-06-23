@@ -336,15 +336,3 @@ public class weapon : MonoBehaviour
 	}
     
 }	
- 
-	
-
-   
-        
-    
-
-   
-
-
-
-
