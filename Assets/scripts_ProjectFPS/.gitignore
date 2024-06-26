@@ -4,3 +4,7 @@
 *.backup
 *.cache
 *.json
+*.obj
+temp
+Assets/scripts_ProjectFPS.meta
+FSTimeGet-946c549d510dfbe458346e5853d7a25a' (Unknown (FileSystemError): An unknown error occurred
