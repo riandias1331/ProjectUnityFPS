@@ -6,7 +6,7 @@ using TMPro;
 public class Weapon : MonoBehaviour
 {
     // Gun config
-    public TextMeshProUGUI  TMPROgun;
+    public TextMeshProUGUI TMPROgun;
     public string namegun;
     public int damage;
     public float range;
@@ -20,7 +20,7 @@ public class Weapon : MonoBehaviour
 
     // HUD
     public GameObject miraCrossHair;
-    public TextMeshProUGUI textoReload;   
+    public TextMeshProUGUI textoReload;
 
     // Timing
     public float fireRate;
@@ -32,8 +32,10 @@ public class Weapon : MonoBehaviour
     public bool drawnstartbool;
     public bool canShoot = false;
     public bool walking = true;
-    public bool running = true;
-    
+    public bool running = false;
+
+    private bool gamerunning;
+
     // Audio
     public AudioSource gunAudio;
     public AudioClip fireAudio;
@@ -50,6 +52,17 @@ public class Weapon : MonoBehaviour
     public Animator gunAnim;
     public ParticleSystem muzzleFlashFogo1;
 
+    // Recoil
+    public float recoilForce = 10f;
+    public float recoilDuration = 0.5f;
+    private float currentRecoilTime = 0f;
+    private Vector3 initialCameraPosition;
+
+    void Awake()
+    {
+        gamerunning = false;
+    }
+
     void Start()
     {
         currentRateToFire = fireRate;
@@ -57,33 +70,35 @@ public class Weapon : MonoBehaviour
         startBullets = bullets;
         animator = GetComponent<Animator>();
         gunAudio = GetComponent<AudioSource>();
-        
+        initialCameraPosition = mainCamera.transform.position;
+
         StartCoroutine(StartDrawn1());
     }
 
     void Update()
     {
-
-        textoReload.text = bullets + "/" + mag;
-        TMPROgun.text = namegun;
-
-
-
-       
-        if (mag <= 0)
+        if (gamerunning)
         {
-            mag = 1;
-        }
+            textoReload.text = bullets + "/" + mag;
+            TMPROgun.text = namegun;
+            currentRateToFire += Time.deltaTime;
+            currentTimeToReload += Time.deltaTime;
+            miraCrossHair.SetActive(true);
 
-        currentRateToFire += Time.deltaTime;
-        currentTimeToReload += Time.deltaTime;
+            if (mag <= 0)
+            {
+                mag = 1;
+            }
 
-        
-        if (currentTimeToReload >= timeToReload && !drawnstartbool) {
-            canShoot = true;
+            if (currentTimeToReload >= timeToReload && !drawnstartbool)
+            {
+                canShoot = true;
+            }
+            if (!canShoot)
+            {
+                miraCrossHair.SetActive(false);
+            }
         }
-        
-       
 
         // Reset animator parameters
         animator.SetBool("idle", true);
@@ -114,13 +129,14 @@ public class Weapon : MonoBehaviour
         }
 
         // fire with mira
-        if (Input.GetKey(KeyCode.Mouse1) && Input.GetButton("Fire1") && bullets > 0)
+        if (Input.GetKey(KeyCode.Mouse1) && Input.GetButton("Fire1")  && canShoot && currentRateToFire >= fireRate && bullets > 0)
         {
-            MiraFire();
+            // MiraFire();
+            Shoot();
         }
 
         // Running
-        if (Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.W))
+        if (Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.W) && running)
         {
             Run();
         }
@@ -130,10 +146,6 @@ public class Weapon : MonoBehaviour
         {
             Walk();
         }
-
-
-
-        
 
     }
 
@@ -145,24 +157,16 @@ public class Weapon : MonoBehaviour
         miraCrossHair.SetActive(false);
         muzzleFlashFogo.Stop();
 
-        
-
         // Espera até que a animação de "drawn" esteja completa
         yield return new WaitForSeconds(timeDrawn);
-       
+
         drawnstartbool = false;
         gunAudio.enabled = true;
         canShoot = true;
-        game();
+        gamerunning = true;
     }
-        void game(){
-            miraCrossHair.SetActive(true);
-        }
 
-
-
-
-    void Shoot()
+     void Shoot()
     {
         bullets--;
         muzzleFlashFogo.Play();
@@ -184,6 +188,34 @@ public class Weapon : MonoBehaviour
         animator.SetBool("walk", false);
         animator.SetBool("idle", false);
         animator.SetBool("fire", true);
+
+        if (Input.GetKey(KeyCode.Mouse1))
+        {
+            Mira();
+            animator.SetBool("fire", false);
+        }
+        if (Input.GetKey(KeyCode.Mouse1) && Input.GetButton("Fire1"))
+        {
+            MiraFire();
+            animator.SetBool("fire", false);
+        }
+
+        // Adicione o recoil aqui
+        currentRecoilTime = 0f;
+        StartCoroutine(Recoil());
+    }
+
+    IEnumerator Recoil()
+    {
+        while (currentRecoilTime < recoilDuration)
+        {
+            currentRecoilTime += Time.deltaTime;
+            float t = currentRecoilTime / recoilDuration;
+            t = t * t * (3f - 2f * t); // Curva de Hermite para suavizar o movimento
+            mainCamera.transform.position = initialCameraPosition + new Vector3(Random.Range(-recoilForce, recoilForce) * t, Random.Range(-recoilForce, recoilForce) * t, 0f);
+            yield return null;
+        }
+        mainCamera.transform.position = initialCameraPosition;
     }
 
     void Reload()
@@ -207,67 +239,38 @@ public class Weapon : MonoBehaviour
 
     void MiraFire()
     {
-        currentRateToFire = 0;
-        muzzleFlashFogo.Play();
-        // animator.SetBool("mirafire", true);
-        animator.SetBool("fire", false);
-        // animator.SetBool("mira", true);
-        // animator.SetBool("idle", false);
-        gunAudio.Play();
-        miraCrossHair.SetActive(false);
-
-
-        if (Input.GetKey(KeyCode.Mouse1) && Input.GetButton("Fire1")) {
-        animator.SetBool("mirafire", true);
+        if (Input.GetKey(KeyCode.Mouse1) && Input.GetButton("Fire1"))
+        {
+            animator.SetBool("mirafire", true);
         }
         else
         {
-          animator.SetBool("mirafire", false);
-        }
-        animator.SetBool("mira", true);
-		animator.SetBool("idle", false);
-
-
-        
-
-
-        RaycastHit hit;
-        if (Physics.Raycast(mainCamera.transform.position, mainCamera.transform.forward, out hit, range))
-        {
-            if (hit.transform.tag == "enemy")
-            {
-                hit.transform.GetComponent<enemy>().lifezombie -= damage;
-            }
+            animator.SetBool("mirafire", false);
         }
     }
 
     void Run()
     {
+        running = true;
         animator.SetBool("run", true);
         animator.SetBool("idle", false);
         miraCrossHair.SetActive(false);
-        if (Input.GetButton("Fire1") && bullets <= 0)
-        {
-            Reload();
-        }
-        if (Input.GetKeyDown(KeyCode.R) && mag > 0 && bullets < 30)
-        {
-            Reload();
-            animator.SetBool("run", false);
-        }
+        canShoot = false;
     }
 
     void Walk()
     {
+        walking = true;
+        canShoot = false;
         animator.SetBool("walk", true);
         animator.SetBool("idle", false);
 
-        if (Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.W))
+        if (Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.W) && running)
         {
-            animator.SetBool("run", true);
+            Run();
         }
 
-        if (Input.GetButton("Fire1") && Input.GetKey(KeyCode.W) && currentRateToFire >= fireRate && canShoot && bullets > 0)
+        if (Input.GetButton("Fire1") && Input.GetKey(KeyCode.W) && canShoot && currentRateToFire >= fireRate &&  bullets > 0)
         {
             Shoot();
             animator.SetBool("walk", false);

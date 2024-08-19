@@ -1,25 +1,21 @@
-
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class  Player_Controller : MonoBehaviour
+public class Player_Movement : MonoBehaviour
 {
     // Variáveis públicas para ajustar a velocidade do movimento e a sensibilidade da câmera
     public float moveSpeed = 5f;
     public float mouseSensitivity = 100f;
 
-    // Variáveis privadas para armazenar a referência ao componente Rigidbody do jogador e à câmera
-    public Rigidbody rb;
-    public Transform playerCamera;
-
     // Variáveis privadas para armazenar a rotação acumulada da câmera no eixo X
     private float xRotation = 0f;
+    // Referência à câmera principal
+    public Transform playerCamera;
 
     void Start()
     {
-        // Obter e armazenar referências ao Rigidbody e à câmera do jogador
-        rb = GetComponent<Rigidbody>();
+        // Obter e armazenar referência à câmera do jogador
         playerCamera = Camera.main.transform;
 
         // Trava o cursor no centro da tela e o torna invisível
@@ -48,7 +44,7 @@ public class  Player_Controller : MonoBehaviour
         // Calcula a direção do movimento com base na entrada e na orientação do jogador
         Vector3 moveDirection = transform.right * moveX + transform.forward * moveZ;
 
-        // Move o jogador usando o Rigidbody para uma física mais precisa
-        rb.MovePosition(rb.position + moveDirection * moveSpeed * Time.deltaTime);
+        // Move o jogador diretamente usando a transformação
+        transform.Translate(moveDirection * moveSpeed * Time.deltaTime, Space.World);
     }
 }
