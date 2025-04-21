@@ -9,3 +9,40 @@ Textures
 maps
 project
 Packages
+
+# Unity generated files
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Mm]emoryCaptures/
+
+# Visual Studio / MonoDevelop generated files
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Exclude .env file for sensitive data
+.env
+
+# Unity metadata
+*.meta
+
+# Crash reports
+sysinfo.txt
+
+# Exclude auto-generated lightmaps
+LightmapSnapshot.asset

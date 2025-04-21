@@ -14,11 +14,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "E:\\user\\Documents\\blackScorpionGroup\\Unity\\Projetos Unity\\My project (Fps) BlackScorpion urp\\Assembly-CSharp.csproj",
+      "projectUniqueName": "E:\\user\\Documents\\RIANMG\\Empreendedorismo\\blackScorpionGroup\\RegisdSoft\\Projects\\Games\\Unity\\Projetos Unity\\My project (Fps) BlackScorpion urp\\Assembly-CSharp.csproj",
       "projectName": "Assembly-CSharp",
-      "projectPath": "E:\\user\\Documents\\blackScorpionGroup\\Unity\\Projetos Unity\\My project (Fps) BlackScorpion urp\\Assembly-CSharp.csproj",
+      "projectPath": "E:\\user\\Documents\\RIANMG\\Empreendedorismo\\blackScorpionGroup\\RegisdSoft\\Projects\\Games\\Unity\\Projetos Unity\\My project (Fps) BlackScorpion urp\\Assembly-CSharp.csproj",
       "packagesPath": "C:\\Users\\Rian\\.nuget\\packages\\",
-      "outputPath": "E:\\user\\Documents\\blackScorpionGroup\\Unity\\Projetos Unity\\My project (Fps) BlackScorpion urp\\Temp\\obj\\Debug\\Assembly-CSharp\\",
+      "outputPath": "E:\\user\\Documents\\RIANMG\\Empreendedorismo\\blackScorpionGroup\\RegisdSoft\\Projects\\Games\\Unity\\Projetos Unity\\My project (Fps) BlackScorpion urp\\Temp\\obj\\Debug\\Assembly-CSharp\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
